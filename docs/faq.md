@@ -146,3 +146,56 @@ a = {
 К сожалению, эта конструкция не оптимизируется компилятором, так что в скомпилированный JS оно попадёт.
 Но, наверняка, оно будет соптимизировано V8.
 Если есть предложения получше — озвучивайте!
+
+#### Предикат не добавляет специфичности матчам
+```
+{
+  "person": {
+      "name": "World"
+  }
+}
+```
+
+```
+match / {
+    apply .person
+}
+
+match .person[.name == 'World'] {
+    "3"
+}
+
+match .person[.name] {
+    "2"
+}
+
+match .person {
+    "1"
+}
+```
+
+Выведет 1. 
+
+Обходить нужно правильным порядком:
+
+```
+match / {
+    apply .person
+}
+
+match .person {
+    "1"
+}
+
+match .person[.name] {
+    "2"
+}
+
+match .person[.name == 'World'] {
+    "3"
+}
+```
+Выведет 3. 
+
+Поиграть можно тут: https://f-o-r.github.io/yate-playground/?gistId=09635a70a6cafba3ccb1d01b9f3d6c17
+Разбираемся тут: https://github.com/pasaran/yate/issues/255
