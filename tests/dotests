@@ -78,7 +78,16 @@ for (var i = 0, l = files.length; i < l; i++) {
             desc = meta.description;
         }
     } catch (e) {
-        if (meta.throws) {
+        if (meta.throws && meta.expectedError) {
+            var actualMessage = extractErrorMessage(e.message);
+            if (actualMessage == meta.expectedError) {
+                status = 'ok';
+                desc = meta.description;
+            } else {
+                status = 'fail';
+                desc = 'error message mismatch';
+            }
+        } else if (meta.throws) {
             status = 'ok';
             desc = meta.description;
         } else {
@@ -166,6 +175,11 @@ function parseTest(content) {
         yate: yate,
         options: options
     };
+}
+
+function extractErrorMessage(message) {
+    var lines = message.split('\n')
+    return lines[0];
 }
 
 // vim: set ft=javascript: //
