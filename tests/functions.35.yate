@@ -1,0 +1,13 @@
+/// {
+///     description: 'There should be correct amount of arguments',
+///     expectedError: 'ERROR: too many arguments for the function',
+///     throws: true
+/// }
+
+func foo(scalar firstArg) {
+    firstArg
+}
+
+match / {
+    foo('first arg', 'second arg')
+}
